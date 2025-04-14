@@ -1,12 +1,7 @@
 import {Link} from "react-router-dom"
-import { useState } from "react";
+
 export function Login (){
     
-    function alert_Message(){
-        const [message,setMessage]=useState("")
-        // setMessage("Login realizado com sucesso!")
-        // setMessage("Ocorreu um erro! Revise os campos e tente novamente.")
-    }
 
     return(
 

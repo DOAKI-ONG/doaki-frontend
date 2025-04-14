@@ -1,12 +1,7 @@
 import { Link } from "react-router-dom"
-import { useState } from "react";
 
 export function Register(){
-    function alert_Message(){
-        const [message,setMessage]=useState("")
-        // setMessage("Login realizado com sucesso!")
-        // setMessage("Ocorreu um erro! Revise os campos e tente novamente.")
-    }
+ 
 return(
     
     <div className="relative w-screen h-screen bg-[conic-gradient(#B3CC84_12%,#F4EC6D_24%,#AED59B_40%,#E3D53F_75%,#B3CC84_88%)] flex items-center justify-center flex-col">
