@@ -23,7 +23,7 @@ export function Login (){
                 const res = await api.post('/users/login', data)
                 alert("Sucesso! Usuário logado.")
                 Cookies.set('token', res.data.token, { expires: 1 }) 
-                navigate('/home')
+                navigate('/')
             }
             catch (error){
                 alert("Erro! Usuário não está logado.")
