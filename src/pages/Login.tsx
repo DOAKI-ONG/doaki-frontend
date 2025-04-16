@@ -34,7 +34,7 @@ export function Login (){
                 navigate('/')
             }
             catch (error){
-                alert("Erro! Usuário não está logado.")
+                alert("Erro! Ocorreu um erro ao realizar o login")
             }
     }
 
