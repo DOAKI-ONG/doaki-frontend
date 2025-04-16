@@ -3,6 +3,9 @@ import { api } from "../lib/api"
 import {z} from 'zod'
 import { useForm } from "react-hook-form"
 import {zodResolver} from '@hookform/resolvers/zod'
+import { Eye, EyeClosed} from "lucide-react"
+import { useState } from "react"
+import {Input} from "@/components/ui/input"
 
 
 const signInFormSchema = z.object({
@@ -17,6 +20,10 @@ const signInFormSchema = z.object({
 export type SignInFormSchema = z.infer<typeof signInFormSchema>
 
 export function Register(){
+    const[isVisible,setIsVisible] = useState(false)
+    const[isVisibleConfirm,setIsVisibleConfirm] = useState(false)
+      
+
     const navigate = useNavigate()
     const {register, handleSubmit, formState: {errors, isSubmitting}} = useForm<SignInFormSchema>({
         resolver: zodResolver(signInFormSchema)})
@@ -40,32 +47,40 @@ return(
                     <div className="flex flex-col m-3">
                         {errors.first_name && <span className="text-red-500">{errors.first_name.message}</span>}
                         <label className="mb-2 self-start w-80">Nome:</label>
-                        <input type="text" placeholder="Primeiro nome" {...register(`first_name`)} required className="bg-[#F5F5F5] rounded-2xl w-80 h-10 shadow-md p-2 focus:outline-none focus:ring-2 focus:ring-[#b3cc84]" />
+                        <Input type="text" placeholder="Primeiro nome" {...register(`first_name`)} required className="bg-[#F5F5F5] rounded-2xl w-80 h-10 shadow-md p-2 focus:outline-none focus:ring-2 focus:ring-[#b3cc84] border-0" />
                     </div>
                     <div className="flex flex-col m-3">
                     {errors.last_name && <span className="text-red-500">{errors.last_name.message}</span>}
                         <label className="mb-2 self-start">Sobrenome:</label>
-                        <input type="text" placeholder="Último nome" {...register(`last_name`)} required className="bg-[#F5F5F5] rounded-2xl w-80 h-10 shadow-md p-2 focus:outline-none focus:ring-2 focus:ring-[#b3cc84]" />
+                        <Input type="text" placeholder="Último nome" {...register(`last_name`)} required className="bg-[#F5F5F5] rounded-2xl w-80 h-10 shadow-md p-2 focus:outline-none focus:ring-2 focus:ring-[#b3cc84] border-0" />
                     </div>
                     <div className="flex flex-col m-3">
                         {errors.email && <span className="text-red-500">{errors.email.message}</span>}
                         <label className="mb-2 self-start">Email:</label>
-                        <input type="email" placeholder="Digite o seu email" {...register(`email`)} required className="bg-[#F5F5F5] rounded-2xl w-80 h-10 shadow-md p-2 focus:outline-none focus:ring-2 focus:ring-[#b3cc84]" />
+                        <Input type="email" placeholder="Digite o seu email" {...register(`email`)} required className="bg-[#F5F5F5] rounded-2xl w-80 h-10 shadow-md p-2 focus:outline-none focus:ring-2 focus:ring-[#b3cc84] border-0" />
                     </div>
                     <div className="flex flex-col m-3">
                         {errors.confirm_email && <span className="text-red-500">{errors.confirm_email.message}</span>}
                         <label className="mb-2 self-start">Confirme o email:</label>
-                        <input type="email" placeholder="Digite o seu email" {...register(`confirm_email`)} required className="bg-[#F5F5F5] rounded-2xl w-80 h-10 shadow-md p-2 focus:outline-none focus:ring-2 focus:ring-[#b3cc84]" />
+                        <Input type="email" placeholder="Digite o seu email" {...register(`confirm_email`)} required className="bg-[#F5F5F5] rounded-2xl w-80 h-10 shadow-md p-2 focus:outline-none focus:ring-2 focus:ring-[#b3cc84] border-0" />
                     </div>
                     <div className="flex flex-col m-2">
                         {errors.password && <span className="text-red-500">{errors.password.message}</span>}
                         <label className="mb-2 self-start">Senha:</label>
-                        <input type="password" placeholder="Digite a sua senha" minLength={8} {...register(`password`)} required className="bg-[#F5F5F5] rounded-2xl w-80 h-10 shadow-md p-2 focus:outline-none focus:ring-2 focus:ring-[#b3cc84]" />
+                        <div className="flex flex-row items-center space-x-2">
+                        <Input type= {isVisible? "text" : "password"} placeholder="Digite a sua senha" minLength={8} {...register(`password`)} required className="relative bg-[#F5F5F5] rounded-2xl w-80 h-10 shadow-md p-2 focus:outline-none focus:ring-2 focus:ring-[#b3cc84] border-0" />
+                        <button className="absolute left-[42.7%]" type="button" onClick={()=>setIsVisible(!isVisible)}>{isVisible ? <EyeClosed/>: <Eye/>
+                        }</button>
+                    </div>
                     </div>
                     <div className="flex flex-col m-3">
                         {errors.confirm_password && <span className="text-red-500">{errors.confirm_password.message}</span>}
                         <label className="mb-2 self-start">Confirme a senha:</label>
-                        <input type="password" placeholder="Digite a sua senha" minLength={8} {...register(`confirm_password`)} required className="bg-[#F5F5F5] rounded-2xl w-80 h-10 shadow-md p-2 focus:outline-none focus:ring-2 focus:ring-[#b3cc84]" />
+                        <div className="flex flex-row items-center space-x-2">
+                        <Input type= {isVisibleConfirm? "text" : "password"} placeholder="Confirme a sua senha" minLength={8} {...register(`confirm_password`)} required className="relative bg-[#F5F5F5] rounded-2xl w-80 h-10 shadow-md p-2 focus:outline-none focus:ring-2 focus:ring-[#b3cc84] border-0" />
+                        <button className="absolute left-[84%]" type="button" onClick={()=>setIsVisibleConfirm(!isVisibleConfirm)}>{isVisibleConfirm ? <EyeClosed/>: <Eye/>
+                        }</button>
+                    </div>
                     </div>
                     
                 </div>

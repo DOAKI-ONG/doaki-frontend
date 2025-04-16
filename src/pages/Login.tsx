@@ -4,6 +4,10 @@ import {z} from 'zod'
 import { useForm } from "react-hook-form"
 import {zodResolver} from '@hookform/resolvers/zod'
 import  Cookies  from "js-cookie"
+import { useState } from "react"
+import { Eye, EyeClosed} from "lucide-react"
+import {Input} from "@/components/ui/input"
+
 
 
 const signInFormSchema = z.object({
@@ -14,6 +18,10 @@ const signInFormSchema = z.object({
 export type SignInFormSchema = z.infer<typeof signInFormSchema>
 
 export function Login (){
+    const[isVisible,setIsVisible] = useState(false)
+    function handleVisibility(){
+        setIsVisible(!isVisible)
+    }
     
     const navigate = useNavigate()
         const {register, handleSubmit, formState: {errors, isSubmitting}} = useForm<SignInFormSchema>({
@@ -23,7 +31,7 @@ export function Login (){
                 const res = await api.post('/users/login', data)
                 alert("Sucesso! Usuário logado.")
                 Cookies.set('token', res.data.token, { expires: 1 }) 
-                navigate('/home')
+                navigate('/')
             }
             catch (error){
                 alert("Erro! Usuário não está logado.")
@@ -38,13 +46,17 @@ export function Login (){
             <form onSubmit={handleSubmit(handleLoginUser)} className=" mt-8">
                 <div className="flex flex-col m-3">
                     {errors.email && <span className="text-red-500">{errors.email.message}</span>}
-                    <label className="mb-2 self-start">Email:</label>
-                    <input type="email" placeholder="Digite o seu email" {...register(`email`)} required className="bg-[#F5F5F5] rounded-2xl w-80 h-10 shadow-md p-2  focus:outline-none focus:ring-2 focus:ring-[#b3cc84]" />
+                    <label className="mb-2 self-start text-black ">Email:</label>
+                    <Input type="email" placeholder="Digite o seu email" {...register(`email`)} required className="bg-[#F5F5F5] rounded-2xl w-80 h-10 shadow-md p-2 focus:outline-none focus:ring-2 focus:ring-[#b3cc84] border-0" />
                 </div>
                 <div className="flex flex-col m-2">
                     {errors.password && <span className="text-red-500">{errors.password.message}</span>}
-                    <label className="mb-2 self-start">Senha:</label>
-                    <input type="password" placeholder="Digite a sua senha" minLength={8} {...register(`password`)} required className="bg-[#F5F5F5] rounded-2xl w-80 h-10 shadow-md p-2 focus:outline-none focus:ring-2 focus:ring-[#b3cc84]" />
+                    <label className="mb-2 self-start text-black ">Senha:</label>
+                    <div className="flex flex-row items-center space-x-2">
+                        <Input type= {isVisible? "text" : "password"} placeholder="Digite a sua senha" minLength={8}{...register(`password`)} className="relative bg-[#F5F5F5] rounded-2xl w-80 h-10 shadow-md p-2 focus:outline-none focus:ring-2 focus:ring-[#b3cc84] border-0"/>
+                        <button type="button" className="absolute left-[80%]" onClick={handleVisibility}>{isVisible ? <EyeClosed/>: <Eye/>
+                        }</button>
+                    </div>
                 </div>
                 <button type= "submit" disabled={isSubmitting} className="mx-auto w-30 h-12 mt-10 flex justify-center items-center text-white font-bold text-lg rounded-2xl bg-gradient-to-b from-[#B3CC84] to-[#AED59B] hover:opacity-80 transition duration-150 ease-in-out cursor-pointer">
                 Entrar
