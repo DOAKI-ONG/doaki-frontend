@@ -10,10 +10,10 @@ export function Home (){
     return(
         <div>
             <Header/>
-                <div className="flex flex-col w-screen h-screen items-center justify-center">
-                    <div className="flex flex-row w-300 h-75 border-3 border-[#619766] rounded-2xl shadow-md ml-5 pr-10 space-x-15 ">
+                <div className="flex flex-col w-screen h-screen items-center justify-center bg-white">
+                    <div className="flex flex-row w-300 h-75 border-3 border-[#619766] rounded-2xl shadow-md ml-5 pr-10 space-x-15 bg-white">
                         <img src="src\assets\logo-1-doaki.png" alt="" className="w-70 h-55 border-gray-100 border-2 rounded-2xl self-center ml-10" />
-                        <div className="flex flex-col items-center justify-center text-justify w-250">
+                        <div className="flex flex-col items-center justify-center text-justify w-250 bg-white">
                             <h2 className="text-2xl text-[#619766] mb-5">Nome da ONG</h2>
 
                             <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quam placeat cupiditate laborum! Possimus nulla minima et nobis impedit neque soluta quidem ipsam quam nihil, id reprehenderit, est aliquam. Quaerat, quo?</p>

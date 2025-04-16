@@ -7,6 +7,7 @@ import  Cookies  from "js-cookie"
 import { useState } from "react"
 import { Eye, EyeClosed} from "lucide-react"
 import {Input} from "@/components/ui/input"
+import { AxiosError } from "axios"
 
 
 
@@ -33,8 +34,12 @@ export function Login (){
                 Cookies.set('token', res.data.token, { expires: 1 }) 
                 navigate('/')
             }
-            catch (error){
-                alert("Erro! Ocorreu um erro ao realizar o login")
+            catch (error: unknown){
+                if (error instanceof AxiosError && error.response) {
+                    alert("Erro! Ocorreu um erro ao realizar o login: " + error.response.data.message)
+                } else {
+                    alert("Erro! Algo deu errado.")
+                }
             }
     }
 

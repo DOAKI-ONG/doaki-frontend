@@ -6,6 +6,7 @@ import {zodResolver} from '@hookform/resolvers/zod'
 import { Eye, EyeClosed} from "lucide-react"
 import { useState } from "react"
 import {Input} from "@/components/ui/input"
+import { AxiosError } from "axios"
 
 
 const signInFormSchema = z.object({
@@ -33,8 +34,12 @@ export function Register(){
             alert("Usuário cadastrado com sucesso.")
             navigate('/sign-in')
         }
-        catch (error){
-            alert("Erro ao cadastrar usuário.")
+        catch (error: unknown){
+            if (error instanceof AxiosError && error.response) {
+                alert("Erro! Ocorreu um erro ao resgistrar: " + error.response.data.message)
+            } else {
+                alert("Erro! Algo deu errado.")
+            }
         }
 }
 return(
