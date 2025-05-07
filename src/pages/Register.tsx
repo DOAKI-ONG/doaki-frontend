@@ -7,6 +7,7 @@ import { Eye, EyeClosed} from "lucide-react"
 import { useState } from "react"
 import {Input} from "@/components/ui/input"
 import { AxiosError } from "axios"
+import { toast } from 'react-hot-toast';
 
 
 const signInFormSchema = z.object({
@@ -31,14 +32,14 @@ export function Register(){
     async function handleRegisterUser(data: SignInFormSchema){ 
         try{
             await api.post('/users/register', data)
-            alert("Usuário cadastrado com sucesso.")
+            toast.success("Usuário cadastrado com sucesso.")
             navigate('/sign-in')
         }
         catch (error: unknown){
             if (error instanceof AxiosError && error.response) {
-                alert("Erro! Ocorreu um erro ao resgistrar: " + error.response.data.message)
+                toast.error("Erro! Ocorreu um erro ao resgistrar: " + error.response.data.message)
             } else {
-                alert("Erro! Algo deu errado.")
+                toast.error("Erro! Algo deu errado.")
             }
         }
 }
