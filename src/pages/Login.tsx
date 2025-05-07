@@ -8,6 +8,7 @@ import { useState } from "react"
 import { Eye, EyeClosed} from "lucide-react"
 import {Input} from "@/components/ui/input"
 import { AxiosError } from "axios"
+import { toast } from 'react-hot-toast';
 
 
 
@@ -30,15 +31,15 @@ export function Login (){
         async function handleLoginUser(data: SignInFormSchema){ 
             try{
                 const res = await api.post('/users/login', data)
-                alert("Sucesso! Usuário logado.")
+                toast.success("Sucesso! Usuário logado.")
                 Cookies.set('token', res.data.token, { expires: 1 }) 
                 navigate('/')
             }
             catch (error: unknown){
                 if (error instanceof AxiosError && error.response) {
-                    alert("Erro! Ocorreu um erro ao realizar o login: " + error.response.data.message)
+                    toast.error("Erro! Ocorreu um erro ao realizar o login: " + error.response.data.message)
                 } else {
-                    alert("Erro! Algo deu errado.")
+                    toast.error("Erro! Algo deu errado.")
                 }
             }
     }
