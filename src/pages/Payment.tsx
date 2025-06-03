@@ -8,18 +8,16 @@ import { useOngsInfo } from "@/hooks/useOngsInfo";
 
 export function Payment() {
     const { ongCnpj } = useParams<{ ongCnpj: string }>();
-    const {ongByCnpj} = useOngsInfo(ongCnpj);
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const amount = queryParams.get("amount")
     const parsedAmount = amount ? parseFloat(amount) : 0;
-    console.log("Parsed amount:", parsedAmount);
-    console.log("Amount from params:", amount);
+
     return (
         <div>
             <main className={`w-screen h-screen flex flex-col items-center justify-center bg-[conic-gradient(#B3CC84_12%,#F4EC6D_24%,#AED59B_40%,#E3D53F_75%,#B3CC84_88%)] text-black`}>
-                {parsedAmount && parsedAmount > 0 ?
-                (<PaymentBrick amount={parsedAmount} />) :(
+                {parsedAmount && parsedAmount > 0 && ongCnpj ?
+                (<PaymentBrick amount={parsedAmount} cnpj ={ongCnpj}/>) :(
                 <div className="flex flex-col w-100 h-100 rounded-2xl items-center justify-center bg-[#f5f5f5] shadow-md p-5">
                     <h2 className="text-2xl self-center font-medium text-[#619766]">Informação inicial</h2>
                     <form className="my-auto">
