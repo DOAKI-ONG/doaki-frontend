@@ -9,6 +9,7 @@ import { useState } from "react";
 import { api } from "../lib/api";
 import { toast } from 'react-hot-toast';
 import { useUserInfo } from "@/hooks/useUserInfo";
+import { useAuth } from "@/context/contextAuth";
 
 const editFormSchema = z.object({
   name: z.preprocess(
@@ -48,6 +49,7 @@ export function FormProfile({page, hovered}: FormProfileProps){
     const [changeName, setChangeName] = useState(false)
     const {data} = useUserInfo()
     const {user} = data ? data : {}
+    const contextAuth = useAuth();
 
 const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<EditFormSchema>({
   resolver: zodResolver(editFormSchema) as Resolver<EditFormSchema>,
@@ -55,6 +57,7 @@ const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<
     const queryClient = useQueryClient()
     async function handleEdit (data: EditFormSchema){ 
         try{const response = await api.patch('/users/edit', data)
+            contextAuth.profileImage = response.data.user.profileImage;
             toast.success("Dados atualizados com sucesso!")
             return response.data
         }

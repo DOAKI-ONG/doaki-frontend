@@ -9,6 +9,7 @@ import { Eye, EyeClosed} from "lucide-react"
 import {Input} from "@/components/ui/input"
 import { AxiosError } from "axios"
 import { toast } from 'react-hot-toast';
+import { useAuth } from "@/context/contextAuth"
 
 
 
@@ -28,7 +29,7 @@ export function Login (){
     }
     
     const navigate = useNavigate()
-
+    const contextAuth = useAuth()
     
         const {register, handleSubmit, formState: {errors, isSubmitting}} = useForm<SignInFormSchema>({
             resolver: zodResolver(signInFormSchema)})
@@ -36,8 +37,7 @@ export function Login (){
             try{
                 const res = await api.post('/users/login', data)
                 toast.success("Sucesso! Usuário logado.")
-                Cookies.set('token', res.data.token, { expires: 1/2 }) 
-                navigate('/')
+                contextAuth.login(res.data.token, res.data.profileImage)
             }
             catch (error: unknown){
                 if (error instanceof AxiosError && error.response) {

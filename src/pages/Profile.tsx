@@ -4,33 +4,34 @@ import { useState } from "react"
 import { api } from "@/lib/api";
 import {useNavigate} from "react-router-dom"
 import { toast } from 'react-hot-toast';
-import Cookies from "js-cookie";
+
 import { FormProfile } from "../components/FormProfile";
+import { useAuth } from "@/context/contextAuth";
 
 export function Profile() {
     const [page,setPage] = useState("Perfil")  
     const [hovered, setHovered] = useState(false);
+    const contextAuth = useAuth();
     const navigate = useNavigate();
     async function handleDeleteUser(){
 
         try{
-            await api.patch('/users/delete')
+            await api.delete('/users/delete')
             toast.success("Conta deletada com sucesso!");
-            navigate('/home');
+            contextAuth.logout();
+            navigate('/');
+            
         }
         catch(error){
-
+            console.error(error);
              toast.error("Erro! Algo deu errado.")
         }
     }
 
     async function handleLogout() {
-        Cookies.remove("token")
-        const hasToken = Cookies.get('token')
+        contextAuth.logout();
+        navigate('/');
         toast.success("Você saiu da conta com sucesso!")
-    if (!hasToken) {
-        navigate('/sign-in')
-    }
         
     }
     
