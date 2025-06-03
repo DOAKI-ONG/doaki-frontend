@@ -1,7 +1,7 @@
 import {Link as Scroll} from "react-scroll"
 import { Link } from "react-router"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import Cookies from "js-cookie"
+import { useAuth } from "@/context/contextAuth"
 
 type Headerprops = {
     className?: string
@@ -9,9 +9,8 @@ type Headerprops = {
 }
 
 export function Header (props: Headerprops){
-    const hasToken = Cookies.get('token')
+    const contextAuth = useAuth();
     const styleHeader = props.className ? props.className :"flex fixed px-1 w-screen h-20 top-0 border-b-1 bg-white z-50"
-    const photo = "https://th.bing.com/th/id/OIP.0uaGrLEY_HxDEyklFhqGXgAAAA?rs=1&pid=ImgDetMain"
     
     return(
         <header className={styleHeader}>
@@ -27,10 +26,10 @@ export function Header (props: Headerprops){
                   ):
                   null }
                 <div className="flex items-center justify-center">
-                  {hasToken ? (
+                  {contextAuth.isLoggedIn() ? (
                     <Link to ="/profile" className="rounded-full  ml-auto mr-5">
                         <Avatar className="w-16 h-16 border-1 border-[#7D7D7D] ">
-                            <AvatarImage src={photo} />
+                            <AvatarImage src={contextAuth.profileImage!} />
                             <AvatarFallback>Avatar</AvatarFallback>
                         </Avatar>
                     </Link>
