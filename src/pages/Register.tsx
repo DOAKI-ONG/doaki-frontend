@@ -8,15 +8,25 @@ import { useState } from "react"
 import {Input} from "@/components/ui/input"
 import { AxiosError } from "axios"
 import { toast } from 'react-hot-toast';
+import { checkCpf } from "@/service/checkCPF"
 
 
 const signInFormSchema = z.object({
-    first_name: z.string().min(1, {message: "Nome é obrigatório."}),
-    last_name: z.string().min(1, {message: "Sobrenome é obrigatório."}),
+    name: z.string().min(1, {message: "Nome completo é obrigatório."}),
+    cpf: z.string().min(11, {message: "CPF é obrigatório."}),
     email: z.string().email({message: "Email inválido."}),
     confirm_email: z.string().email({message: "Email inválido."}),
     password: z.string().min(8, {message: "Senha deve ter no mínimo 8 caracteres."}),
     confirm_password: z.string().min(8, {message: "Senha deve ter no mínimo 8 caracteres."})
+}).refine((data) => data.email === data.confirm_email, {
+    message: "Os emails não coincidem.",
+    path: ["confirm_email"],
+}).refine((data) => data.password === data.confirm_password, {
+    message: "As senhas não coincidem.",
+    path: ["confirm_password"],
+}).refine((data) => checkCpf(data.cpf), {
+    message: "CPF inválido.",
+    path: ["cpf"],
 })
 
 export type SignInFormSchema = z.infer<typeof signInFormSchema>
@@ -51,14 +61,14 @@ return(
             <form onSubmit={handleSubmit(handleRegisterUser)}>
                 <div className=" mt-8 grid grid-cols-2">
                     <div className="flex flex-col m-3">
-                        {errors.first_name && <span className="text-red-500">{errors.first_name.message}</span>}
+                        {errors.name && <span className="text-red-500">{errors.name.message}</span>}
                         <label className="mb-2 self-start w-80">Nome:</label>
-                        <Input type="text" placeholder="Primeiro nome" {...register(`first_name`)} required className="bg-[#F5F5F5] rounded-2xl w-80 h-10 shadow-md p-2 focus:outline-none focus:ring-2 focus:ring-[#b3cc84] border-0 animate-jump animate-once animate-duration-1000 animate-delay-1000" />
+                        <Input type="text" placeholder="Primeiro nome" {...register(`name`)} required className="bg-[#F5F5F5] rounded-2xl w-80 h-10 shadow-md p-2 focus:outline-none focus:ring-2 focus:ring-[#b3cc84] border-0 animate-jump animate-once animate-duration-1000 animate-delay-1000" />
                     </div>
                     <div className="flex flex-col m-3">
-                    {errors.last_name && <span className="text-red-500">{errors.last_name.message}</span>}
-                        <label className="mb-2 self-start">Sobrenome:</label>
-                        <Input type="text" placeholder="Último nome" {...register(`last_name`)} required className="bg-[#F5F5F5] rounded-2xl w-80 h-10 shadow-md p-2 focus:outline-none focus:ring-2 focus:ring-[#b3cc84] border-0 animate-jump animate-once animate-duration-1000 animate-delay-1000" />
+                    {errors.cpf && <span className="text-red-500">{errors.cpf.message}</span>}
+                        <label className="mb-2 self-start">CPF:</label>
+                        <Input type="text" minLength={11} maxLength={11} placeholder="Digite o seu CPF" {...register(`cpf`)} required className="bg-[#F5F5F5] rounded-2xl w-80 h-10 shadow-md p-2 focus:outline-none focus:ring-2 focus:ring-[#b3cc84] border-0 animate-jump animate-once animate-duration-1000 animate-delay-1000" />
                     </div>
                     <div className="flex flex-col m-3">
                         {errors.email && <span className="text-red-500">{errors.email.message}</span>}
