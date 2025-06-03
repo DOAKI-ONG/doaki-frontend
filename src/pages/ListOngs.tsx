@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { useOngsInfo } from "@/hooks/useOngsInfo"
 import { toast } from "react-hot-toast"
 import { Link } from "react-router-dom"
+import Cookies from "js-cookie"
 //import {Headset } from "lucide-react"
 export type Ong = {
     id_ong: string;
@@ -16,10 +17,11 @@ export type Ong = {
 }
 
 export function ListOngs (){
-    const {data: ongs, isLoading, isError, isFetched} = useOngsInfo()
-    const [isVisible,setIsVisible] = useState(false)
-    function handleVisibility (){
-        setIsVisible(!isVisible)
+    const hasToken = Cookies.get('token')
+    const {ongs, isLoading, isError, isFetched} = useOngsInfo()
+    const [visibleId, setVisibleId] = useState<string | null>(null);
+    function handleVisibility (id: string) {
+        setVisibleId(visibleId === id ? null : id);
     }
     useEffect(() => {
         if (isError) {
@@ -38,9 +40,9 @@ export function ListOngs (){
     return(
         <main>
             <Header/>
-                <div className="flex flex-col w-screen h-screen items-center justify-center bg-white text-black">
+                <div className="flex flex-col mt-110 p-5 w-screen h-screen items-center justify-center bg-white text-black gap-15">
                     {ongs && ongs.map((ong:Ong) =>(
-                        <div className="flex flex-row w-[90%] h-[45%] border-3 border-[#619766] rounded-2xl shadow-md ml-5 pr-10 space-x-15 bg-white text-black">
+                        <div className="flex flex-row mt-auto w-[90%] h-[50%] border-3 border-[#619766] rounded-2xl shadow-md  p-5 space-x-15 bg-white text-black">
                         <img src={ong.profileImage} alt="" className="w-80 h-55 border-gray-100 border-2 rounded-2xl self-center ml-10" />
                         <div className="flex flex-col gap-2 justify-center text-justify w-250 bg-white text-black">
                             <h2 className="flex self-center text-2xl text-[#619766] mb-5">{ong.name}</h2>
@@ -63,14 +65,14 @@ export function ListOngs (){
                                     <p className="text-black">{ong.context}</p>
                                 </div>
                             </div>
-                            <div>
-                                <h2 className={isVisible?"text-[#619766] font-semibold":"hidden"}>Descrição:</h2>
-                                <p className={isVisible ? "text-justify" : "hidden"}>{ong.description}</p>
+                            <div className="flex items-center justify-center flex-col mt-5">
+                                <h2 className={visibleId === ong.cnpj ?"text-[#619766] font-semibold":"hidden"}>Descrição</h2>
+                                <p className={visibleId === ong.cnpj? "text-justify" : "hidden"}>{ong.description}</p>
                             </div>
 
-                            <button type="button" onClick={handleVisibility} className="text-sm text-gray-400 mt-2 hover:scale-110 duration-300 transition-all ease-in-out cursor-pointer">{isVisible ? "Ver menos...": "Ver mais..."}</button>
+                            <button type="button" onClick={()=>handleVisibility(ong.cnpj)} className="text-sm text-gray-400 mt-2 hover:scale-110 duration-300 transition-all ease-in-out cursor-pointer">{visibleId === ong.cnpj ? "Ver menos...": "Ver mais..."}</button>
 
-                            <button type= "submit" className=" w-30 h-12 mt-2 flex justify-center items-center text-white font-bold text-lg rounded-2xl bg-gradient-to-b from-[#B3CC84] to-[#AED59B] self-end hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer" ><Link to="/donation" className="w-[100%]">Doar</Link></button>
+                            <button type= "submit" className=" w-30 h-12 mt-2 flex justify-center items-center text-white font-bold text-lg rounded-2xl bg-gradient-to-b from-[#B3CC84] to-[#AED59B] self-end hover:scale-105 transition-all duration-300 ease-in-out cursor-pointer" ><Link to={hasToken ? `/donation/${ong.cnpj}` : "/"} className="w-[100%]">Doar</Link></button>
                         </div>
                     </div>
                     ))}

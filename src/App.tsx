@@ -15,7 +15,7 @@ export default function App() {
         <Route path="/sign-up" element={<Register />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/listongs" element={<ListOngs/>} />
-        <Route path="/donation" element={<Payment/>}/>
+        <Route path="/donation/:ongCnpj" element={<Payment/>}/>
       </Routes>
     </BrowserRouter>
   );
