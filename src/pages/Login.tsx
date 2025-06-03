@@ -12,6 +12,7 @@ import { toast } from 'react-hot-toast';
 
 
 
+
 const signInFormSchema = z.object({
     email: z.string().email({message: "Email inválido."}),
     password: z.string().min(8, {message: "Senha deve ter no mínimo 8 caracteres."})
@@ -20,19 +21,22 @@ const signInFormSchema = z.object({
 export type SignInFormSchema = z.infer<typeof signInFormSchema>
 
 export function Login (){
+    
     const[isVisible,setIsVisible] = useState(false)
     function handleVisibility(){
         setIsVisible(!isVisible)
     }
     
     const navigate = useNavigate()
+
+    
         const {register, handleSubmit, formState: {errors, isSubmitting}} = useForm<SignInFormSchema>({
             resolver: zodResolver(signInFormSchema)})
         async function handleLoginUser(data: SignInFormSchema){ 
             try{
                 const res = await api.post('/users/login', data)
                 toast.success("Sucesso! Usuário logado.")
-                Cookies.set('token', res.data.token, { expires: 1 }) 
+                Cookies.set('token', res.data.token, { expires: 1/2 }) 
                 navigate('/')
             }
             catch (error: unknown){
