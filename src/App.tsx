@@ -18,6 +18,7 @@ export default function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/listongs" element={<ListOngs/>} />
           <Route path="/donation/:ongCnpj" element={<Payment/>}/>
+          <Route path="/donation/id/:paymentID" element={<Payment/>} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
