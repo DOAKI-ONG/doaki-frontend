@@ -41,7 +41,7 @@ export function Register(){
         resolver: zodResolver(signInFormSchema)})
     async function handleRegisterUser(data: SignInFormSchema){ 
         try{
-            await api.post('/users/register', data)
+            await api.post('/user/register', data)
             toast.success("Usuário cadastrado com sucesso.")
             navigate('/sign-in')
         }
