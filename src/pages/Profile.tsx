@@ -1,22 +1,24 @@
 import { Header } from "../components/Header"
 import { UserRoundPen, HandCoins, LogOut, UserRoundX} from 'lucide-react';
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { api } from "@/lib/api";
 import {useNavigate} from "react-router-dom"
 import { toast } from 'react-hot-toast';
-
 import { FormProfile } from "../components/FormProfile";
 import { useAuth } from "@/context/contextAuth";
+import { useDonation } from "@/hooks/useDonation";
 
 export function Profile() {
     const [page,setPage] = useState("Perfil")  
     const [hovered, setHovered] = useState(false);
     const contextAuth = useAuth();
     const navigate = useNavigate();
+    const {donations, isError, isFetched, isLoading} = useDonation();
+    
     async function handleDeleteUser(){
 
         try{
-            await api.delete('/users/delete')
+            await api.delete('/user/delete')
             toast.success("Conta deletada com sucesso!");
             contextAuth.logout();
             navigate('/');
@@ -29,12 +31,21 @@ export function Profile() {
     }
 
     async function handleLogout() {
-        contextAuth.logout();
-        navigate('/');
-        toast.success("Você saiu da conta com sucesso!")
-        
+        contextAuth.logout();     
     }
     
+    useEffect(() =>{
+        if(isError) {
+            toast.error("Erro ao buscar doações.")
+        }
+        if(isLoading) {
+            toast.loading("Carregando doações...")
+        }
+        if(isFetched) {
+            toast.dismiss();
+            toast.success("Doações carregadas com sucesso!")
+        }
+    }, [isError, isLoading]);
 
     return(
         <>
@@ -61,14 +72,27 @@ export function Profile() {
 
                         <div>
                             {page === "Perfil" && <FormProfile page = {page} hovered = {hovered}/>}
-                            {page === "Doações" &&
-                                <main className={`bg-white text-black ${hovered ? "rounded-tr-3xl rounded-br-3xl" : "rounded-tl-3xl rounded-bl-3xl"} items-center justify-center transition-all duration-300 ease-in-out`}>
-                                    <div className="flex items-center justify-center h-full">
+                            {page === "Doações" && 
+                                    <main className={`bg-white text-black ${hovered ? "rounded-tr-3xl rounded-br-3xl" : "rounded-tl-3xl rounded-bl-3xl"} p-5 flex flex-col h-full transition-all duration-300 ease-in-out`}>
+                                    <div className="flex justify-center">
                                         <h2 className="text-[1.5rem] text-[#947306] ">{page? page : ""}<span className="ml-2 inline-block bg-[#de9e5a] w-3 h-3 rounded-tl-xl rounded-br-xl rounded-bl-xl "></span></h2>
                                     </div>
-                                    <h2>Histórico de doações</h2>
+                                    <div className="grid grid-cols-2 gap-5">
+                                    {donations ? (donations.map((donation:any)=>(    
+                                        <div className="grid grid-cols-2 border-2 border-[#de9e5a] rounded-2xl p-5 mt-10">
+                                            <p>Para: {donation.name}</p>
+                                            <p>Método de pagamento: {donation.paymentMethod}</p>
+                                            <p>Valor: {donation.amount}</p>
+                                            <p>Data: {donation.dataCreated}</p>
+                                        </div>
+                                    ))):(
+                                    <div className="flex justify-center items-center h-full">
+                                        <p className="text-[#947306] text-[1.5rem]">Você ainda não fez nenhuma doação.</p>
+                                    </div>
+                                    )}
+                                    </div>
                                 </main>
-                                }
+}
                                 </div>
                         
     </section>

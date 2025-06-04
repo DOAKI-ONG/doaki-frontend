@@ -56,7 +56,7 @@ const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<
 })
     const queryClient = useQueryClient()
     async function handleEdit (data: EditFormSchema){ 
-        try{const response = await api.patch('/users/edit', data)
+        try{const response = await api.patch('/user/edit', data)
             contextAuth.profileImage = response.data.user.profileImage;
             toast.success("Dados atualizados com sucesso!")
             return response.data

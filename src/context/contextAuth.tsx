@@ -1,6 +1,8 @@
 import React, { createContext, useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
+import { toast } from 'react-hot-toast';
 
 
 type AuthContextType = {
@@ -17,6 +19,7 @@ type Props = {children: React.ReactNode}
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export const AuthProvider = ({ children }:Props) => {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [token, setToken] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);
@@ -42,6 +45,8 @@ export const AuthProvider = ({ children }:Props) => {
 
   const logout = () => {
     Cookies.remove('token');
+    queryClient.clear()
+    toast.success("Você saiu da conta com sucesso!")
     navigate("/")
   };
 
