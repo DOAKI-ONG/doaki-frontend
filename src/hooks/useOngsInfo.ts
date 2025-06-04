@@ -5,7 +5,7 @@ import { toast } from "react-hot-toast";
 
 export async function getOngsInfo(){
     try {
-        const response = await api.get(`ongs/users/getAll`)
+        const response = await api.get(`ong/user/getAll`)
         return response.data;
     }
     catch(error){

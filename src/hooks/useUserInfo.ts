@@ -4,7 +4,7 @@ import { toast } from 'react-hot-toast';
 
 export async function getUserInfo() {
   try {
-    const response = await api.get(`/users/profile`);
+    const response = await api.get(`/user/profile`);
     return response.data;
   } catch (error) {
     toast.error('Erro ao buscar o usuário.');
