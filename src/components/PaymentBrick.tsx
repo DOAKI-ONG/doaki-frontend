@@ -1,8 +1,9 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation} from "@tanstack/react-query";
 import { api } from "@/lib/api";
 import {Payment,initMercadoPago,StatusScreen} from '@mercadopago/sdk-react';
 import toast from "react-hot-toast";
 import { IPaymentBrickCustomization, IPaymentBrickPayer } from "@mercadopago/sdk-react/esm/bricks/payment/type";
+import { useNavigate } from "react-router-dom";
 
 initMercadoPago(import.meta.env.VITE_MERCADOPAGO_PUBLIC_KEY, {
   locale: 'pt-BR',
@@ -14,9 +15,10 @@ type PaymentProps ={
   cnpj: string
 }
 
+
 async function registerNewPayment( paymentData: IPaymentBrickPayer, cnpj: string) {
   try {
-    const response = await api.post(`/donations/ong/${cnpj}`,
+    const response = await api.post(`/donation/ong/${cnpj}`,
       paymentData,
     );
     toast.success('Pagamento registrado com sucesso!');
@@ -28,20 +30,21 @@ async function registerNewPayment( paymentData: IPaymentBrickPayer, cnpj: string
 
 export function PaymentBrick({amount, cnpj}: PaymentProps) {
   
-  const queryClient = useQueryClient();
-  const { mutate } = useMutation({
-    mutationFn: async (formData:any) => {
-      registerNewPayment(formData, cnpj)},
+  const {mutateAsync} = useMutation({
+    mutationFn: async (formData: any) => {
+      return await registerNewPayment(formData, cnpj);
+    },
     mutationKey: ['user-donation'],
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['user-donation'] });
+    onSuccess: (data) => {
+      console.log("Pagamento realizado com sucesso:", data);
+       navigate(`/donation/id/${data?.paymentMpId}`);
     },
     onError: (error) => {
       console.error("Erro ao realizar o pagamento:", error);
     },
   });
-
-     const initialization = {
+  const navigate = useNavigate();
+  const initialization = {
     amount: amount || 0,
   };
   
@@ -58,7 +61,7 @@ const customization:IPaymentBrickCustomization = {
 
     const onSubmit = async (formData:any)=>{
       try{
-        mutate(formData.formData);
+       await mutateAsync(formData.formData);
       } 
       catch (error) {
         console.error("Erro ao processar o pagamento:", error);

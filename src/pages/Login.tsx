@@ -35,7 +35,7 @@ export function Login (){
             resolver: zodResolver(signInFormSchema)})
         async function handleLoginUser(data: SignInFormSchema){ 
             try{
-                const res = await api.post('/users/login', data)
+                const res = await api.post('/user/login', data)
                 toast.success("Sucesso! Usuário logado.")
                 contextAuth.login(res.data.token, res.data.profileImage)
             }
