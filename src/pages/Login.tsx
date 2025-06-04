@@ -8,6 +8,9 @@ import { useState } from "react"
 import { Eye, EyeClosed} from "lucide-react"
 import {Input} from "@/components/ui/input"
 import { AxiosError } from "axios"
+import { toast } from 'react-hot-toast';
+import { useAuth } from "@/context/contextAuth"
+
 
 
 
@@ -19,26 +22,28 @@ const signInFormSchema = z.object({
 export type SignInFormSchema = z.infer<typeof signInFormSchema>
 
 export function Login (){
+    
     const[isVisible,setIsVisible] = useState(false)
     function handleVisibility(){
         setIsVisible(!isVisible)
     }
     
     const navigate = useNavigate()
+    const contextAuth = useAuth()
+    
         const {register, handleSubmit, formState: {errors, isSubmitting}} = useForm<SignInFormSchema>({
             resolver: zodResolver(signInFormSchema)})
         async function handleLoginUser(data: SignInFormSchema){ 
             try{
-                const res = await api.post('/users/login', data)
-                alert("Sucesso! Usuário logado.")
-                Cookies.set('token', res.data.token, { expires: 1 }) 
-                navigate('/')
+                const res = await api.post('/user/login', data)
+                toast.success("Sucesso! Usuário logado.")
+                contextAuth.login(res.data.token, res.data.profileImage)
             }
             catch (error: unknown){
                 if (error instanceof AxiosError && error.response) {
-                    alert("Erro! Ocorreu um erro ao realizar o login: " + error.response.data.message)
+                    toast.error("Erro! Ocorreu um erro ao realizar o login: " + error.response.data.message)
                 } else {
-                    alert("Erro! Algo deu errado.")
+                    toast.error("Erro! Algo deu errado.")
                 }
             }
     }
@@ -46,24 +51,24 @@ export function Login (){
     return(
 
         <div className="relative w-screen h-screen bg-[conic-gradient(#B3CC84_12%,#F4EC6D_24%,#AED59B_40%,#E3D53F_75%,#B3CC84_88%)] flex items-center justify-center flex-col">
-        <div className=" relative flex items-center justify-center bg-white p-8 rounded-2xl shadow-md w-100 h-110 flex-col ">
+        <div className=" relative flex items-center justify-center bg-white p-8 rounded-2xl shadow-md w-100 h-110 flex-col animate-fade-up animate-once animate-duration-[1500ms]" >
         <img src="src\assets\logo-1-doaki.png" alt="logo" className="absolute top-[-60px] w-45 h-30 rounded-2xl shadow-md "/>
             <form onSubmit={handleSubmit(handleLoginUser)} className=" mt-8">
                 <div className="flex flex-col m-3">
                     {errors.email && <span className="text-red-500">{errors.email.message}</span>}
                     <label className="mb-2 self-start text-black ">Email:</label>
-                    <Input type="email" placeholder="Digite o seu email" {...register(`email`)} required className="bg-[#F5F5F5] rounded-2xl w-80 h-10 shadow-md p-2 focus:outline-none focus:ring-2 focus:ring-[#b3cc84] border-0" />
+                    <Input type="email" placeholder="Digite o seu email" {...register(`email`)} required className="bg-[#F5F5F5] rounded-2xl w-80 h-10 shadow-md p-2 focus:outline-none focus:ring-2 focus:ring-[#b3cc84] border-0 animate-jump animate-once animate-duration-1000 animate-delay-1000" />
                 </div>
                 <div className="flex flex-col m-2">
                     {errors.password && <span className="text-red-500">{errors.password.message}</span>}
                     <label className="mb-2 self-start text-black ">Senha:</label>
                     <div className="flex flex-row items-center space-x-2">
-                        <Input type= {isVisible? "text" : "password"} placeholder="Digite a sua senha" minLength={8}{...register(`password`)} className="relative bg-[#F5F5F5] rounded-2xl w-80 h-10 shadow-md p-2 focus:outline-none focus:ring-2 focus:ring-[#b3cc84] border-0"/>
+                        <Input type= {isVisible? "text" : "password"} placeholder="Digite a sua senha" minLength={8}{...register(`password`)} className="relative bg-[#F5F5F5] rounded-2xl w-80 h-10 shadow-md p-2 pr-10 focus:outline-none focus:ring-2 focus:ring-[#b3cc84] border-0 animate-jump animate-once animate-duration-1000 animate-delay-1300"/>
                         <button type="button" className="absolute left-[80%]" onClick={handleVisibility}>{isVisible ? <EyeClosed/>: <Eye/>
                         }</button>
                     </div>
                 </div>
-                <button type= "submit" disabled={isSubmitting} className="mx-auto w-30 h-12 mt-10 flex justify-center items-center text-white font-bold text-lg rounded-2xl bg-gradient-to-b from-[#B3CC84] to-[#AED59B] hover:opacity-80 transition duration-150 ease-in-out cursor-pointer">
+                <button type= "submit" disabled={isSubmitting} className="mx-auto w-30 h-12 mt-10 flex justify-center items-center text-white font-bold text-lg rounded-2xl bg-gradient-to-b from-[#B3CC84] to-[#AED59B] hover:opacity-80 transition duration-150 ease-in-out cursor-pointer animate-jump animate-once animate-duration-1000 animate-delay-1800">
                 Entrar
             </button>
             </form>
