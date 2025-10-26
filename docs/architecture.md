@@ -15,6 +15,9 @@ src/
 ├── assets/                # Arquivos estáticos como imagens e ícones
 │   ├── logo-1-doaki.png
 │   └── logo-2.png
+|── lib/
+|   ├── api.ts             # Api axios para requisições
+│   └── utils.ts           # utilitários do tailwind.css
 ├── components/            # Componentes reutilizáveis da aplicação
 │   └── Header.tsx
 ├── pages/                 # Páginas principais da aplicação (rotas)
